@@ -54,7 +54,7 @@ type sysOpenatSpecs struct {
 //
 // It can be passed ebpf.CollectionSpec.Assign.
 type sysOpenatProgramSpecs struct {
-	EnterOpen *ebpf.ProgramSpec `ebpf:"enter_open"`
+	EnterOpenat *ebpf.ProgramSpec `ebpf:"enter_openat"`
 }
 
 // sysOpenatMapSpecs contains maps before they are loaded into the kernel.
@@ -96,12 +96,12 @@ func (m *sysOpenatMaps) Close() error {
 //
 // It can be passed to loadSysOpenatObjects or ebpf.CollectionSpec.LoadAndAssign.
 type sysOpenatPrograms struct {
-	EnterOpen *ebpf.Program `ebpf:"enter_open"`
+	EnterOpenat *ebpf.Program `ebpf:"enter_openat"`
 }
 
 func (p *sysOpenatPrograms) Close() error {
 	return _SysOpenatClose(
-		p.EnterOpen,
+		p.EnterOpenat,
 	)
 }
 

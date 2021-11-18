@@ -19,9 +19,10 @@ import (
 )
 
 type OpenAtEventData struct {
+	Uid      uint32
 	Pid      uint32
 	FileName [64]byte
-	Comm     [64]byte
+	Comm     [16]byte
 }
 
 func TracepointOpentat(ctx context.Context, handler func(OpenAtEventData)) error {
@@ -35,7 +36,7 @@ func TracepointOpentat(ctx context.Context, handler func(OpenAtEventData)) error
 	}
 	defer objs.Close()
 
-	tp, err := link.Tracepoint("syscalls", "sys_enter_openat", objs.EnterOpen)
+	tp, err := link.Tracepoint("syscalls", "sys_enter_openat", objs.EnterOpenat)
 	if err != nil {
 		return err
 	}

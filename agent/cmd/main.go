@@ -5,6 +5,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"hoplon/agent/bpf"
 	"log"
@@ -13,18 +14,36 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+
+	"golang.org/x/sys/unix"
+)
+
+var (
+	pid = flag.Int("pid", 0, "Process ID to be protected")
 )
 
 func main() {
+	flag.Parse()
+
+	if *pid == 0 {
+		// TODO
+		// log.Fatalln("A PID must be selected")
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	var wg sync.WaitGroup
 
 	handler := func(data bpf.OpenAtEventData) {
-		filename := string(data.FileName[:])
-		if strings.HasPrefix(filename, "/proc/") {
-			fmt.Printf("[INFO] pid: %d, filename: %s, Comm: %s\n", data.Pid, filename, string(data.Comm[:]))
+		procPath := fmt.Sprintf("/proc/%d", pid)
+		filename := unix.ByteSliceToString(data.FileName[:])
+
+		fmt.Printf("[INFO] uid: %d, pid: %d, filename: %s, Comm: %s\n", data.Uid, data.Pid, filename, unix.ByteSliceToString(data.Comm[:]))
+
+		if strings.HasPrefix(filename, procPath) {
+			// TODO
+			// unix.Kill(int(data.Pid), syscall.SIGKILL)
 		}
 	}
 	wg.Add(1)
