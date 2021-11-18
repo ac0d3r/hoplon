@@ -11,8 +11,7 @@ struct event_data_t
     char comm[TASK_COMM_LEN];
 };
 
-// ringbuf 跑不通感觉是 github.com/cilium/ebpf 库的问题(因为 tmd example 都跑不起来，记录下错误：
-// field EnterOpenat: program enter_openat: map ringbuf_events: map create: invalid argument
+// TODO ringbuf
 struct
 {
     __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
